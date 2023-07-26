@@ -1,0 +1,47 @@
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+
+{% block title %}
+Posts
+{% endblock title %}
+
+{% block content %}
+    <h3>Поиск<h3/>
+
+    <form action="" method="get">
+        {{ filterset.form }}
+        <input type="submit" value="Найти" />
+    </form>
+
+    {% if search %}
+    <ul>
+        {% for new in search %}
+        <li><p align="left">
+        <b><big>{{ new.title|censor }}</big></b>
+        {{ new.creation_time }}
+        {{ new.description|censor|truncatechars:20 }}</p></li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <h2>Постов нет!</h2>
+    {% endif %}
+
+    {% if page_obj.has_previous %}
+        <a href="?page=1">1</a>
+        {% if page_obj.previous_page_number != 1 %}
+           ...
+            <a href="?page={{page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a>
+        {% endif %}
+    {% endif %}
+
+    {{ page_obj.number }}
+
+    {% if page_obj.has_next %}
+        <a href="?page={{page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
+        {% if paginator.num_pages != page_obj.next_page_number %}
+           ...
+            <a href="?page={{page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
+        {% endif %}
+    {% endif %}
+{% endblock content %}

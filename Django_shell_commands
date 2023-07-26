@@ -1,0 +1,77 @@
+python3 manage.py shell
+
+from portal.models import *
+
+u1 = User.objects.create_user(username = 'Maria')
+u2 = User.objects.create_user(username = 'Begemot')
+
+Author.objects.create(authorUser = u1)
+Author.objects.create(authorUser = u2)
+
+Category.objects.create(name='Собаки')
+Category.objects.create(name='Болезни')
+Category.objects.create(name='Воспитание')
+Category.objects.create(name='Поведение')
+Category.objects.create(name='Интересное')
+
+author = Author.objects.get(id=1)
+Post.objects.create(author=author, categoryType='AR', title='Что делать, если собака всё грызёт', text='somebigtext')
+
+Post.object.create(author=author, categoryType='NW', title='Немцы отказываются возвращаться в офис из-за собак', text='somebigtext')
+
+author1 = Author.objects.get(id=2)
+Post.objects.create(author=author1, categoryType='AR', title='Аллергия у собак: виды, причины, симптомы, лечение', text='somebigtext')
+
+Post.objects.get(id=1).postCategory.add(Category.objects.get(id=1))
+Post.objects.get(id=1).postCategory.add(Category.objects.get(id=3))
+Post.objects.get(id=1).postCategory.add(Category.objects.get(id=4))
+
+Post.objects.get(id=2).postCategory.add(Category.objects.get(id=1))
+Post.objects.get(id=2).postCategory.add(Category.objects.get(id=5))
+
+Post.objects.get(id=3).postCategory.add(Category.objects.get(id=1))
+Post.objects.get(id=3).postCategory.add(Category.objects.get(id=2))
+
+Comment.objects.create(commentPost=Post.objects.get(id=1), commentUser=Author.objects.get(id=1).authorUser, text='Очень важная информация!')
+
+Comment.objects.create(commentPost=Post.objects.get(id=1), commentUser=User.objects.get(id=2), text='Спасибо, интересный пост!')
+
+Comment.objects.create(commentPost=Post.objects.get(id=2), commentUser=User.objects.get(id=2), text='У нас не откажешься))))')
+
+Comment.objects.create(commentPost=Post.objects.get(id=3), commentUser=User.objects.get(id=1), text='Препараты давать только после консультации с ветеринаром!')
+
+Comment.objects.get(id=1).like()
+Comment.objects.get(id=1).like()
+Comment.objects.get(id=2).like()
+Comment.objects.get(id=1).like()
+Comment.objects.get(id=4).like()
+Comment.objects.get(id=4).like()
+Comment.objects.get(id=5).like()
+Comment.objects.get(id=5).like()
+Comment.objects.get(id=1).dislike()
+
+Post.objects.get(id=1).like()
+Post.objects.get(id=1).like()
+Post.objects.get(id=1).like()
+Post.objects.get(id=2).like()
+Post.objects.get(id=3).like()
+Post.objects.get(id=3).like()
+Post.objects.get(id=3).like()
+Post.objects.get(id=2).dislike()
+Post.objects.get(id=3).dislike()
+Post.objects.get(id=2).like()
+
+a = Author.objects.get(id=1)
+a.update_rating()
+a.ratingAuthor
+
+b = Author.objects.get(id=2)
+b.update_rating()
+b.ratingAuthor
+
+Author.objects.order_by('-ratingAuthor')[:1].values('authorUser__username', 'ratingAuthor')
+
+Post.objects.order_by('-rating').values('dateCreation', 'author__authorUser__username', 'rating', 'title')[0]
+Post.objects.order_by('-rating')[0].preview()
+
+Post.objects.order_by('-rating')[0].comment_set.all().values('text')
