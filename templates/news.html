@@ -10,17 +10,42 @@ Posts
     <h1>Новости</h1>
     <h2>Всего новостей: {{ news|length }}</h2>
     <hr>
+
+    {% if perms.news.add_product %}
+    <a href="{% url 'news_create' %}">Добавить новость</a>
+    <a href="{% url 'article_create' %}">Добавить статью</a>
+    {% endif %}
     {% if news %}
-    <ul>
-        {% for new in news %}
-        <li><p align="left">
-        <b><big>{{ new.title|censor }}</big></b>
-        {{ new.creation_time }}
-        {{ new.description|censor|truncatechars:20 }}
-        {{ new.get_categoryType_display }}</p></li>
-        {% endfor %}
-    </ul>
-    {% else %}
+        <table>
+            <tr>
+                <td>Название</td>
+                <td>Дата</td>
+                <td>Описание</td>
+                <td>Категория</td>
+                {% if perms.news.change_post or perms.news.delete_post %}
+                <td>Действия</td>
+                {% endif %}
+
+            </tr>
+            {% for new in news %}
+            <tr>
+                <td>{{ new.title|censor }}</td>
+                <td>{{ new.creation_time }}</td>
+                <td>{{ new.description|censor|truncatechars:20 }}</td>
+                <td>{{ new.get_categoryType_display }}</td>
+                <td>
+                    {% if perms.news.change_post %}
+                    <a href="{% url 'news_edit' new.id %}">Изменить</a>
+                    {% endif %}
+                    {% if perms.news.delete_post %}
+                    <a href="{% url 'news_delete' new.id %}">Удалить</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+     {% else %}
     <h2>Постов нет!</h2>
     {% endif %}
 
