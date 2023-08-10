@@ -1,6 +1,5 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.decorators import login_required
-from django.db.models import Exists, OuterRef
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_protect
 from datetime import datetime
@@ -10,6 +9,7 @@ from .models import *
 from django.http import HttpResponse
 from .filters import PostFilter
 from .forms import NewsForm
+
 
 
 class AuthorList(ListView):
@@ -145,6 +145,7 @@ class CategoryListView(ListView):
         return context
 
 @login_required
+@csrf_protect
 def subscribe(request, pk):
     user = request.user
     category = Category.objects.get(id=pk)
@@ -153,6 +154,8 @@ def subscribe(request, pk):
     message = 'Вы оформили подписку на категорию'
     return render(request, 'subscribe.html', {'category': category, 'message': message})
 
+@login_required
+@csrf_protect
 def unsubscribe(request, pk):
     user = request.user
     category = Category.objects.get(id=pk)
