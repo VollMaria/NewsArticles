@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MinValueValidator
 from django.contrib.auth.models import User
 from django.db.models import Sum
 from django.urls import reverse
@@ -7,6 +8,9 @@ from django.urls import reverse
 class Author(models.Model):
     authorUser = models.OneToOneField(User, on_delete=models.CASCADE)
     ratingAuthor = models.SmallIntegerField(default=0)
+
+    def __str__(self):
+        return self.authorUser.username
 
     def update_rating(self):
         postRat = self.post_set.aggregate(postRating=Sum('rating'))
@@ -23,6 +27,7 @@ class Author(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=64, unique=True)
+    subscribers = models.ManyToManyField(User, related_name='categories')
 
     def __str__(self):
         return self.name
@@ -40,8 +45,7 @@ class Post(models.Model):
     title = models.CharField(max_length=128)
     description = models.TextField()
     creation_time = models.DateTimeField(auto_now_add=True)
-    postCategory = models.ManyToManyField(Category, through='PostCategory')
-
+    category = models.ManyToManyField(Category, through='PostCategory')
     text = models.TextField()
     rating = models.SmallIntegerField(default=0)
 
@@ -58,8 +62,6 @@ class Post(models.Model):
     def dislike(self):
         self.rating -= 1
         self.save()
-
-
 
 
 class PostCategory(models.Model):

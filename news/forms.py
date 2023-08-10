@@ -7,12 +7,6 @@ class NewsForm(forms.ModelForm):
 
     class Meta:
         model = Post
-        fields = ['title', 'author', 'description', 'text']
+        fields = ['title', 'author', 'category', 'description', 'text']
 
 
-class ArticlesForm(forms.ModelForm):
-    description = forms.CharField(min_length=15)
-
-    class Meta:
-        model = Post
-        fields = ['title', 'author', 'description', 'text']

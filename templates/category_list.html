@@ -8,14 +8,19 @@ Posts
 
 {% block content %}
     <h1>Новости</h1>
-    <h2>Всего новостей: {{ news|length }}</h2>
+    <h2>Всего новостей в этой категории: {{ category_news_list|length }}</h2>
+        {% if is_not_subscriber %}
+            <p class="text-center"><a href="{% url 'subscribe' category.id %}" class="btn btn-secondary btn-sm">Подписаться</a></p>
+        {% else %}
+            <p class="text-center"><a href="{% url 'unsubscribe' category.id %}" class = "btn btn-secondary btn-sm">Отписаться</a></p>
+        {% endif %}
     <hr>
 
     {% if perms.news.add_product %}
     <a href="{% url 'news_create' %}">Добавить новость</a>
     <a href="{% url 'article_create' %}">Добавить статью</a>
     {% endif %}
-    {% if news %}
+    {% if category_news_list %}
         <table>
             <tr>
                 <td>Название</td>
@@ -28,14 +33,14 @@ Posts
                 {% endif %}
 
             </tr>
-            {% for new in news %}
+            {% for new in category_news_list %}
             <tr>
                 <td>{{ new.title|censor }}</td>
                 <td>{{ new.creation_time }}</td>
                 <td>{{ new.description|censor|truncatechars:20 }}</td>
                 <td>{{ new.get_categoryType_display }}</td>
                 <td>{% for category in new.category.all %}
-                     <a href="{% url 'category_list' category.id %}">
+                    <a href="{% url 'category_list' category.id %}">
                         {{ category }}
                     </a>
                     {% endfor %}</td>
