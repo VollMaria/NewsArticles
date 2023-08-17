@@ -11,7 +11,6 @@ from .filters import PostFilter
 from .forms import NewsForm
 
 
-
 class AuthorList(ListView):
     model = Author
     context_object_name = 'Authors'
@@ -143,6 +142,7 @@ class CategoryListView(ListView):
         context['is_not_subscriber'] = self.request.user not in self.category.subscribers.all()
         context['category'] = self.category
         return context
+
 
 @login_required
 @csrf_protect
