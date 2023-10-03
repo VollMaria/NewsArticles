@@ -9,6 +9,16 @@ from .models import *
 from django.http import HttpResponse
 from .filters import PostFilter
 from .forms import NewsForm
+from django.core.cache import cache
+import logging
+
+logger = logging.getLogger(__name__)
+
+
+def index(request):
+    logger.info('INFO')
+    news = Post.objects.all()
+    return render(request, 'news.html', context={'news': news})
 
 
 class AuthorList(ListView):
@@ -34,6 +44,14 @@ class PostDetail(DetailView):
     model = Post
     template_name = 'new.html'
     context_object_name = 'new'
+    queryset = Post.objects.all()
+
+    def get_object(self, *args, **kwargs):
+        obj = cache.get(f'new-{self.kwargs["pk"]}', None)
+        if not obj:
+            obj = super().get_object(queryset=self.queryset)
+            cache.set(f'new-{self.kwargs["pk"]}', obj)
+        return obj
 
 
 def multiply(request):
@@ -163,3 +181,4 @@ def unsubscribe(request, pk):
 
     message = 'Вы успешно отписались от рассылки новостей категории '
     return render(request, 'unsubscribe.html', {'category': category, 'message': message})
+
