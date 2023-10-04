@@ -257,14 +257,14 @@ LOGGING = {
         },
         'error': {
             'level': 'ERROR',
-            'filters': ['require_debug_false'],
+            'filters': ['require_debug_true'],
             'class': 'logging.FileHandler',
             'filename': 'errors.log',
             'formatter': 'fourth'
         },
         'security': {
             'level': 'INFO',
-            'filters': ['require_debug_false'],
+            'filters': ['require_debug_true'],
             'class': 'logging.FileHandler',
             'filename': 'security.log',
             'formatter': 'third'
