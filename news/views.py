@@ -1,6 +1,7 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
+from django.views import View
 from django.views.decorators.csrf import csrf_protect
 from datetime import datetime
 from django.urls import reverse_lazy
@@ -11,6 +12,7 @@ from .filters import PostFilter
 from .forms import NewsForm
 from django.core.cache import cache
 import logging
+from django.utils.translation import gettext as _
 
 logger = logging.getLogger(__name__)
 
@@ -182,3 +184,8 @@ def unsubscribe(request, pk):
     message = 'Вы успешно отписались от рассылки новостей категории '
     return render(request, 'unsubscribe.html', {'category': category, 'message': message})
 
+
+class Index(View):
+    def get(self, request):
+        string = _('Hello world')
+        return HttpResponse(string)
